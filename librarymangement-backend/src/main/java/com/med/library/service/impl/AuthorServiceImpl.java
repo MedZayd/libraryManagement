@@ -5,15 +5,14 @@ import com.med.library.entity.Book;
 import com.med.library.repository.AuthorRepository;
 import com.med.library.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+@Service
 public class AuthorServiceImpl implements AuthorService {
-
-    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     private AuthorRepository authorRepository;
 
@@ -23,22 +22,22 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<Author> getAuthors() {
+    public List<Author> getAll() {
         return authorRepository.findAll();
     }
 
     @Override
-    public Optional<Author> getAuthorById(Long authorId) {
+    public Optional<Author> getById(Long authorId) {
         return authorRepository.findById(authorId);
     }
 
     @Override
-    public Author saveAuthor(Author author) {
+    public Author save(Author author) {
         return authorRepository.save(author);
     }
 
     @Override
-    public void deleteAuthorById(Long authorId) {
+    public void deleteById(Long authorId) {
         authorRepository.deleteById(authorId);
     }
 

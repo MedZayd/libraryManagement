@@ -6,11 +6,12 @@ import com.med.library.repository.AuthorRepository;
 import com.med.library.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
+@Transactional
 @Service
 public class AuthorServiceImpl implements AuthorService {
 

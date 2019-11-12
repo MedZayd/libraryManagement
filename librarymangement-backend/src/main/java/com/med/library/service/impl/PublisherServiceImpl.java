@@ -34,11 +34,19 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Override
     public Publisher save(Publisher publisher) {
+        Optional<Publisher> publisherDb = publisherRepository.findByName(publisher.getName().trim());
+        if (publisherDb.isPresent()) {
+            throw new RuntimeException(publisher.getName() + " already exist in database.");
+        }
         return publisherRepository.save(publisher);
     }
 
     @Override
     public void deleteById(Long publisherId) {
+        Optional<Publisher> publisherDb = publisherRepository.findById(publisherId);
+        if (publisherDb.isPresent()) {
+            throw new RuntimeException(" Publisher not found.");
+        }
         publisherRepository.deleteById(publisherId);
     }
 

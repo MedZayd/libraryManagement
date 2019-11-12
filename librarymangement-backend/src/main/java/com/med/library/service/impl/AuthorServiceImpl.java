@@ -34,11 +34,19 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Author save(Author author) {
+        Optional<Author> authorDb = authorRepository.findByName(author.getName().trim());
+        if (authorDb.isPresent()) {
+            throw new RuntimeException(author.getName() + " already exist in database.");
+        }
         return authorRepository.save(author);
     }
 
     @Override
     public void deleteById(Long authorId) {
+        Optional<Author> authorDb = authorRepository.findById(authorId);
+        if (authorDb.isPresent()) {
+            throw new RuntimeException(" Author not found.");
+        }
         authorRepository.deleteById(authorId);
     }
 

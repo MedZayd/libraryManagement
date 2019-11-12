@@ -28,12 +28,12 @@ public class Penalty {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Member member;
+    private LibraryMember libraryMember;
 
-    public Penalty(@NotNull(message = "Penalty reason is mandatory") String reason, @NotNull(message = "Penalty duration is mandatory") int duration, Date startDate, Member member) {
+    public Penalty(@NotNull(message = "Penalty reason is mandatory") String reason, @NotNull(message = "Penalty duration is mandatory") int duration, Date startDate, LibraryMember libraryMember) {
         this.reason = reason;
         this.duration = duration;
         this.startDate = startDate;
-        this.member = member;
+        this.libraryMember = libraryMember;
     }
 }

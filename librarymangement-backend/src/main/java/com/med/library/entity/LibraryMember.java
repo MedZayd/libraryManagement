@@ -3,7 +3,6 @@ package com.med.library.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Parent;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Member {
+public class LibraryMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +30,7 @@ public class Member {
     private Date birthday;
 
     @NotNull(message = "CIN is mandatory")
-    @Column(unique = true)
+    @Column(unique = true, length = 20)
     private String cin;
 
     @Pattern(regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", message = "Invalid mail format.")
@@ -43,13 +42,13 @@ public class Member {
     @NotNull(message = "Author is mandatory")
     private int maxBorrowing;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "libraryMember")
     private List<Borrow> borrows;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "libraryMember")
     private List<Penalty> penalties;
 
-    public Member(@NotNull(message = "Last name is mandatory") String lastname, @NotNull(message = "First name is mandatory") String firstname, Date birthday, @NotNull(message = "CIN is mandatory") String cin, @Pattern(regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", message = "Invalid mail format.") String mail, @Pattern(regexp = "^0[1-9][0-9]{8}$", message = "Invalid phone number format.") String phone, @NotNull(message = "Author is mandatory") int maxBorrowing) {
+    public LibraryMember(@NotNull(message = "Last name is mandatory") String lastname, @NotNull(message = "First name is mandatory") String firstname, Date birthday, @NotNull(message = "CIN is mandatory") String cin, @Pattern(regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", message = "Invalid mail format.") String mail, @Pattern(regexp = "^0[1-9][0-9]{8}$", message = "Invalid phone number format.") String phone, @NotNull(message = "Author is mandatory") int maxBorrowing) {
         this.lastname = lastname;
         this.firstname = firstname;
         this.birthday = birthday;

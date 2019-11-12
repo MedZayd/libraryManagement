@@ -23,7 +23,7 @@ public class Book {
     @NotNull(message = "Book title is mandatory")
     private String title;
 
-    @NotNull(message = "Publication date is mandatory")
+    @NotNull(message = "Publication year is mandatory")
     private String year;
 
     @NotNull(message = "Number of copies is mandatory")

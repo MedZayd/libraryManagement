@@ -2,7 +2,6 @@ package com.med.library.restController;
 
 import com.med.library.dTo.BookDTO;
 import com.med.library.entity.Book;
-import com.med.library.restExceptionHandler.exception.HttpNotFoundException;
 import com.med.library.service.BookService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,8 @@ public class BookRestController {
     private BookService bookService;
 
     @GetMapping
-    public List<BookDTO> getAll() {
-        return bookService.getAll();
+    public ResponseEntity<List<BookDTO>> getAll() {
+        return new ResponseEntity<>(bookService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{bookId}")
@@ -31,16 +30,16 @@ public class BookRestController {
     }
 
     @PostMapping
-    public Book saveBook(@RequestBody Book book) {
-        book.setId(0);
-        return bookService.save(book);
+    public ResponseEntity<BookDTO> saveBook(@RequestBody BookDTO bookDTO) {
+        bookDTO.setId(0);
+        return new ResponseEntity<>(bookService.save(bookDTO), HttpStatus.OK);
     }
 
     @PutMapping("/{bookId}")
-    public ResponseEntity<Book> updateBook(@PathVariable("bookId") long bookId  , @RequestBody Book book) {
+    public ResponseEntity<BookDTO> updateBook(@PathVariable("bookId") long bookId  , @RequestBody BookDTO bookDTO) {
         bookService.findById(bookId);
-        book.setId(bookId);
-        Book updatedBook = bookService.save(book);
+        bookDTO.setId(bookId);
+        BookDTO updatedBook = bookService.save(bookDTO);
         return new ResponseEntity<>(updatedBook, HttpStatus.OK);
     }
 
@@ -50,4 +49,5 @@ public class BookRestController {
         bookService.deleteById(bookId);
         return new ResponseEntity<>("Book deleted successfully !", HttpStatus.OK);
     }
+
 }

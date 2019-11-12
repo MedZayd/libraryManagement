@@ -9,7 +9,7 @@ import java.util.List;
 public interface BookService {
     public List<BookDTO> getAll();
     public BookDTO findById(Long bookId);
-    public Book save(Book book);
+    public BookDTO save(BookDTO bookDTO);
     public void deleteById(Long bookId);
     public void addBorrow(Book book, Borrow borrow);
 }

@@ -4,9 +4,7 @@ import com.med.library.dTo.BookDTO;
 import com.med.library.entity.Book;
 import com.med.library.entity.Borrow;
 import com.med.library.mapper.BookMapper;
-import com.med.library.repository.AuthorRepository;
 import com.med.library.repository.BookRepository;
-import com.med.library.repository.PublisherRepository;
 import com.med.library.restExceptionHandler.exception.HttpNotFoundException;
 import com.med.library.service.BookService;
 import org.mapstruct.factory.Mappers;
@@ -21,16 +19,12 @@ import java.util.List;
 public class BookServiceImpl implements BookService {
 
     private BookRepository bookRepository;
-    private AuthorRepository authorRepository;
-    private PublisherRepository publisherRepository;
 
     private BookMapper bookMapper = Mappers.getMapper(BookMapper.class);
 
     @Autowired
-    public BookServiceImpl(BookRepository bookRepository, AuthorRepository authorRepository, PublisherRepository publisherRepository) {
+    public BookServiceImpl(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
-        this.authorRepository = authorRepository;
-        this.publisherRepository = publisherRepository;
     }
 
     @Override
@@ -49,8 +43,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book save(Book book) {
-        return bookRepository.save(book);
+    public BookDTO save(BookDTO bookDTO) {
+        Book book = bookMapper.bookDTOToBook(bookDTO);
+        Book persistedBook = bookRepository.save(book);
+        return bookMapper.bookToBookDTO(persistedBook);
     }
 
     @Override

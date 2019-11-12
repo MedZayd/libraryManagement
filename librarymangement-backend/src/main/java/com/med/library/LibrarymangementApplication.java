@@ -1,8 +1,5 @@
 package com.med.library;
 
-import com.med.library.entity.Author;
-import com.med.library.entity.Book;
-import com.med.library.entity.Publisher;
 import com.med.library.service.AuthorService;
 import com.med.library.service.BookService;
 import com.med.library.service.PublisherService;
@@ -10,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 public class LibrarymangementApplication implements CommandLineRunner {

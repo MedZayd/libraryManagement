@@ -4,10 +4,14 @@ import com.med.library.entity.Penalty;
 import com.med.library.repository.PenaltyRepository;
 import com.med.library.service.PenaltyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
+@Service
 public class PenaltyServiceImpl implements PenaltyService {
 
     private PenaltyRepository penaltyRepository;

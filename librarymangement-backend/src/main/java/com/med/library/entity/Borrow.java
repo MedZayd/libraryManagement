@@ -3,11 +3,11 @@ package com.med.library.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -27,18 +27,27 @@ public class Borrow {
     @NotNull(message = "Total of borrowing days is mandatory")
     private int copies;
 
-    @ManyToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @ManyToMany
+    @JoinTable(
+            name = "borrow_book",
+            joinColumns = @JoinColumn(name = "borrow_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    private List<Book> books;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "library_member_id")
+    private LibraryMember libraryMember;
 
-    public Borrow(Book book, Member member, Date borrowDate, @NotNull(message = "Total of borrowing days is mandatory") int totalDays) {
+    public Borrow(Date borrowDate, @NotNull(message = "Total of borrowing days is mandatory") int totalDays, @NotNull(message = "Total of borrowing days is mandatory") int copies, List<Book> books, LibraryMember libraryMember) {
         this.borrowDate = borrowDate;
         this.totalDays = totalDays;
-        this.book = book;
-        this.member = member;
+        this.copies = copies;
+        this.books = books;
+        this.libraryMember = libraryMember;
+    }
+
+    public void addBook(Book book) {
+        this.books.add(book);
     }
 }

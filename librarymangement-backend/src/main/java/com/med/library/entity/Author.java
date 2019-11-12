@@ -1,5 +1,6 @@
 package com.med.library.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +20,8 @@ public class Author {
     @NotNull(message = "Author name is mandatory")
     private String name;
 
-    @OneToMany(mappedBy = "author")
+    @ManyToMany(mappedBy = "authors")
+    @JsonIgnoreProperties("authors")
     private List<Book> books;
 
     public Author(@NotNull(message = "Author name is mandatory") String name) {
@@ -28,5 +30,13 @@ public class Author {
 
     public void addBook(Book book) {
         this.books.add(book);
+    }
+
+    @Override
+    public String toString() {
+        return "Author{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

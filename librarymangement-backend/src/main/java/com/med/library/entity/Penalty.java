@@ -16,7 +16,7 @@ public class Penalty {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @NotNull(message = "Penalty reason is mandatory")
     private String reason;

@@ -18,7 +18,7 @@ public class LibraryMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @NotNull(message = "Last name is mandatory")
     private String lastname;

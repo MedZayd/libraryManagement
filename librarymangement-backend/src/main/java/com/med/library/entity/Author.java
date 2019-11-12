@@ -15,7 +15,7 @@ public class Author {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @NotNull(message = "Author name is mandatory")
     private String name;

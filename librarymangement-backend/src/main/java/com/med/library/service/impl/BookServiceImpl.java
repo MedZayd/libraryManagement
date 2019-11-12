@@ -1,9 +1,7 @@
 package com.med.library.service.impl;
 
-import com.med.library.entity.Author;
 import com.med.library.entity.Book;
 import com.med.library.entity.Borrow;
-import com.med.library.entity.Publisher;
 import com.med.library.repository.AuthorRepository;
 import com.med.library.repository.BookRepository;
 import com.med.library.repository.PublisherRepository;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @Service
@@ -36,8 +33,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Optional<Book> findById(Long bookId) {
-        return bookRepository.findById(bookId);
+    public Book findById(Long bookId) {
+        return bookRepository.findById(bookId).orElse(null);
     }
 
     @Override

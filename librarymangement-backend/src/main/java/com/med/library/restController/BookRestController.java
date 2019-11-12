@@ -1,5 +1,6 @@
 package com.med.library.restController;
 
+import com.med.library.dTo.BookDTO;
 import com.med.library.entity.Book;
 import com.med.library.restExceptionHandler.exception.HttpNotFoundException;
 import com.med.library.service.BookService;
@@ -19,17 +20,14 @@ public class BookRestController {
     private BookService bookService;
 
     @GetMapping
-    public List<Book> getAll() {
+    public List<BookDTO> getAll() {
         return bookService.getAll();
     }
 
     @GetMapping("/{bookId}")
-    public ResponseEntity<Book> getBookById(@PathVariable("bookId") long bookId) {
-        Book persistedBook = bookService.findById(bookId);
-        if ( persistedBook == null ) {
-            throw new HttpNotFoundException("ID " + bookId + " not found.");
-        }
-        return  new ResponseEntity<>(persistedBook, HttpStatus.OK);
+    public ResponseEntity<BookDTO> getBookById(@PathVariable("bookId") long bookId) {
+        BookDTO bookDTO = bookService.findById(bookId);
+        return  new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
 
     @PostMapping
@@ -40,10 +38,7 @@ public class BookRestController {
 
     @PutMapping("/{bookId}")
     public ResponseEntity<Book> updateBook(@PathVariable("bookId") long bookId  , @RequestBody Book book) {
-        Book persistedBook = bookService.findById(bookId);
-        if ( persistedBook == null ) {
-            throw new HttpNotFoundException("ID " + bookId + " not found.");
-        }
+        bookService.findById(bookId);
         book.setId(bookId);
         Book updatedBook = bookService.save(book);
         return new ResponseEntity<>(updatedBook, HttpStatus.OK);
@@ -51,10 +46,7 @@ public class BookRestController {
 
     @DeleteMapping("/{bookId}")
     public ResponseEntity<?> deleteBook(@PathVariable("bookId") long bookId) {
-        Book persistedBook = bookService.findById(bookId);
-        if ( persistedBook == null ) {
-            throw new HttpNotFoundException("ID " + bookId + " not found.");
-        }
+        bookService.findById(bookId);
         bookService.deleteById(bookId);
         return new ResponseEntity<>("Book deleted successfully !", HttpStatus.OK);
     }

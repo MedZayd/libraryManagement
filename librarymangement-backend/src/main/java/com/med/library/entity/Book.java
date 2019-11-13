@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -26,14 +27,15 @@ public class Book {
     @NotNull(message = "Publication year is mandatory")
     private String year;
 
-    @NotNull(message = "Number of copies is mandatory")
+    @Min(value = 1, message = "Number of copies is mandatory")
     private int copies;
 
-    @NotNull(message = "Rent price per day is mandatory")
+    @Min(value = 1, message = "Rent price per day is mandatory")
     private double rentPricePerDay;
 
     private int pages;
 
+    @NotNull(message = "Book language is mandatory")
     private String language;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -42,12 +44,10 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
-    @JsonIgnoreProperties("books")
     private List<Author> authors;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "publisher_id")
-    @JsonIgnoreProperties("books")
     private Publisher publisher;
 
     @ManyToMany(mappedBy = "books")

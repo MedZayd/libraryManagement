@@ -1,15 +1,21 @@
 package com.med.library.restController;
 
 import com.med.library.dTo.BookDTO;
-import com.med.library.entity.Book;
+import com.med.library.restExceptionHandler.HttpErrorResponse;
 import com.med.library.service.BookService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/books")
@@ -20,7 +26,8 @@ public class BookRestController {
 
     @GetMapping
     public ResponseEntity<List<BookDTO>> getAll() {
-        return new ResponseEntity<>(bookService.getAll(), HttpStatus.OK);
+        List<BookDTO> bookDTOS = bookService.getAll();
+        return new ResponseEntity<>(bookDTOS, HttpStatus.OK);
     }
 
     @GetMapping("/{bookId}")
@@ -30,7 +37,17 @@ public class BookRestController {
     }
 
     @PostMapping
-    public ResponseEntity<BookDTO> saveBook(@RequestBody BookDTO bookDTO) {
+    public ResponseEntity<?> saveBook(@Valid @RequestBody BookDTO bookDTO, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            Map<String, String> errors = new HashMap<>();
+            for (ObjectError objectError : bindingResult.getAllErrors()) {
+                String field = ((FieldError) objectError).getField();
+                String message = objectError.getDefaultMessage();
+                errors.put(field, message);
+            }
+            HttpErrorResponse<Map<String, String>> httpErrorResponse = new HttpErrorResponse<>(HttpStatus.BAD_REQUEST.value(), "Validation Errors", new Date(), errors);
+            return new ResponseEntity<>(httpErrorResponse, HttpStatus.BAD_REQUEST);
+        }
         bookDTO.setId(0);
         return new ResponseEntity<>(bookService.save(bookDTO), HttpStatus.OK);
     }

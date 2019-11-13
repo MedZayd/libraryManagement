@@ -1,8 +1,12 @@
 package com.med.library.dTo;
 
+import com.med.library.entity.Author;
 import lombok.Data;
 
+import javax.persistence.ManyToMany;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 public class BookDTO {
@@ -14,12 +18,16 @@ public class BookDTO {
     @NotNull(message = "Publication year is mandatory")
     private String year;
 
-    @NotNull(message = "Number of copies is mandatory")
+    @Min(value = 1, message = "Number of copies is mandatory")
     private int copies;
 
-    @NotNull(message = "Rent price per day is mandatory")
+    @Min(value = 1, message = "Rent price per day is mandatory")
     private double rentPricePerDay;
 
     private int pages;
+
+    @NotNull(message = "Book language is mandatory")
     private String language;
+
+    private List<AuthorDTO> authorDTOs;
 }

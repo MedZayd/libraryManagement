@@ -1,22 +1,23 @@
 package com.med.library.mapper;
 
 import com.med.library.dTo.BookDTO;
+import com.med.library.entity.Author;
 import com.med.library.entity.Book;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper
+@Mapper(uses = {AuthorMapper.class} )
 public interface BookMapper {
 
-    BookDTO bookToBookDTO(Book book);
+    @Mapping(source = "authors", target = "authorDTOs")
+    BookDTO toDTO(Book book);
 
-    Book bookDTOToBook(BookDTO bookDTO);
+    Book toEntity(BookDTO bookDTO);
 
     @IterableMapping(elementTargetType = BookDTO.class)
-    List<BookDTO> booksToBookDTOs(List<Book> books);
+    List<BookDTO> toDTOs(List<Book> books);
 
-    @IterableMapping(elementTargetType = Book.class)
-    List<Book> bookDTOsToBooks(List<BookDTO> bookDTOS);
 }

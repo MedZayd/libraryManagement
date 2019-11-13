@@ -17,7 +17,8 @@ public class HttpRestExceptionHandler {
                 new HttpErrorResponse(
                         HttpStatus.NOT_FOUND.value(),
                         e.getMessage(),
-                        new Date()
+                        new Date(),
+                        HttpNotFoundException.class
                 );
         e.printStackTrace();
         return new ResponseEntity<>(httpErrorResponse, HttpStatus.NOT_FOUND);
@@ -29,7 +30,8 @@ public class HttpRestExceptionHandler {
                 new HttpErrorResponse(
                         HttpStatus.BAD_REQUEST.value(),
                         e.getMessage(),
-                        new Date()
+                        new Date(),
+                        Exception.class
                 );
         e.printStackTrace();
         return new ResponseEntity<>(httpErrorResponse, HttpStatus.BAD_REQUEST);

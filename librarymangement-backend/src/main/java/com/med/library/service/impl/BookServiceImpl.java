@@ -30,7 +30,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<BookDTO> getAll() {
         List<Book> books = bookRepository.findAll();
-        return bookMapper.booksToBookDTOs(books);
+        return bookMapper.toDTOs(books);
     }
 
     @Override
@@ -39,14 +39,14 @@ public class BookServiceImpl implements BookService {
         if ( book == null ) {
             throw new HttpNotFoundException("ID " + bookId + " not found.");
         }
-        return bookMapper.bookToBookDTO(book);
+        return bookMapper.toDTO(book);
     }
 
     @Override
     public BookDTO save(BookDTO bookDTO) {
-        Book book = bookMapper.bookDTOToBook(bookDTO);
+        Book book = bookMapper.toEntity(bookDTO);
         Book persistedBook = bookRepository.save(book);
-        return bookMapper.bookToBookDTO(persistedBook);
+        return bookMapper.toDTO(persistedBook);
     }
 
     @Override

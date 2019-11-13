@@ -30,4 +30,6 @@ public class BookDTO {
     private String language;
 
     private List<AuthorDTO> authorDTOs;
+
+    private PublisherDTO publisherDTO;
 }

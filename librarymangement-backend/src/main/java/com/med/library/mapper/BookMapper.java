@@ -9,10 +9,11 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(uses = {AuthorMapper.class} )
+@Mapper(uses = {AuthorMapper.class, PublisherMapper.class} )
 public interface BookMapper {
 
     @Mapping(source = "authors", target = "authorDTOs")
+    @Mapping(source = "publisher", target = "publisherDTO")
     BookDTO toDTO(Book book);
 
     Book toEntity(BookDTO bookDTO);

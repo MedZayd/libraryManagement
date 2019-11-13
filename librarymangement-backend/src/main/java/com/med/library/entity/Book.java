@@ -38,7 +38,7 @@ public class Book {
     @NotNull(message = "Book language is mandatory")
     private String language;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -46,7 +46,7 @@ public class Book {
     )
     private List<Author> authors;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "publisher_id")
     private Publisher publisher;
 

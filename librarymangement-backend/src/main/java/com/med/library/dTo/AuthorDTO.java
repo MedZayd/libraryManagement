@@ -1,7 +1,9 @@
 package com.med.library.dTo;
 
 import javax.validation.constraints.NotNull;
+import lombok.Data;
 
+@Data
 public class AuthorDTO {
 
     private long id;

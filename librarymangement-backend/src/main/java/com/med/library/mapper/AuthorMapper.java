@@ -13,7 +13,7 @@ public interface AuthorMapper {
 
     Author toEntity(AuthorDTO authorDTO);
 
-    @IterableMapping(qualifiedByName = "toDtos")
+    @IterableMapping(qualifiedByName = "toDto")
     List<AuthorDTO> toDtos(List<Author> authors);
 
 }

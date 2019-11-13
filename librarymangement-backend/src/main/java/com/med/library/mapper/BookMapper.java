@@ -17,7 +17,7 @@ public interface BookMapper {
 
     Book toEntity(BookDTO bookDTO);
 
-    @IterableMapping(elementTargetType = BookDTO.class)
+    @IterableMapping(qualifiedByName = "toDTO")
     List<BookDTO> toDTOs(List<Book> books);
 
 }

@@ -1,108 +1,110 @@
 package com.med.library.restController;
 
-import com.med.library.dTo.AuthorDTO;
 import com.med.library.dTo.BookDTO;
-import com.med.library.dTo.PublisherDTO;
-import com.med.library.restExceptionHandler.HttpErrorResponse;
-import com.med.library.service.AuthorService;
 import com.med.library.service.BookService;
+import com.med.library.utils.MappingConsts;
+import com.med.library.utils.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static com.med.library.utils.MappingConsts.*;
 
 @RestController
-@RequestMapping("/books")
+@RequestMapping(MappingConsts.BOOKS)
 public class BookRestController {
 
-
     private BookService bookService;
-    private AuthorService authorService;
 
     @Autowired
-    public BookRestController(BookService bookService, AuthorService authorService) {
+    public BookRestController(BookService bookService) {
         this.bookService = bookService;
-        this.authorService = authorService;
     }
 
+    // Get Mapping
     @GetMapping
     public ResponseEntity<List<BookDTO>> getAll() {
         List<BookDTO> bookDTOS = bookService.getAll();
         return new ResponseEntity<>(bookDTOS, HttpStatus.OK);
     }
 
-    @GetMapping("/{bookId}")
+    @GetMapping(BOOK)
     public ResponseEntity<BookDTO> getBookById(@PathVariable("bookId") long bookId) {
         BookDTO bookDTO = bookService.findById(bookId);
         return  new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/{bookId}/authors")
-    public ResponseEntity<List<AuthorDTO>> getBookAuthors(@PathVariable("bookId") long bookId) {
-        BookDTO bookDTO = bookService.findById(bookId);
-        return  new ResponseEntity<>(bookDTO.getAuthorDTOs(), HttpStatus.OK);
-    }
-
-    @GetMapping("/{bookId}/publisher")
-    public ResponseEntity<PublisherDTO> getBookPublisher(@PathVariable("bookId") long bookId) {
-        BookDTO bookDTO = bookService.findById(bookId);
-        return  new ResponseEntity<>(bookDTO.getPublisherDTO(), HttpStatus.OK);
-    }
-
+    // POST MAPPING
     @PostMapping
-    public ResponseEntity<?> saveBook(@Valid @RequestBody BookDTO bookDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> saveBook(
+            @Valid @RequestBody BookDTO bookDTO,
+            BindingResult bindingResult) {
         if(bindingResult.hasErrors()){
-            return getErrors(bindingResult.getAllErrors());
+            return ValidationError.getErrors(bindingResult.getAllErrors());
         }
         bookDTO.setId(0);
         return new ResponseEntity<>(bookService.save(bookDTO), HttpStatus.OK);
     }
 
-    // FIXME ...
-    @PostMapping("/{bookId}/authors")
-    public ResponseEntity<?> addBookAuthor(@PathVariable("bookId") long bookId, @Valid @RequestBody AuthorDTO authorDTO, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()){
-            return getErrors(bindingResult.getAllErrors());
-        }
-        BookDTO bookDTO = bookService.addAuthor(bookId, authorDTO);
+    @PostMapping(BOOK_AUTHOR)
+    public ResponseEntity<BookDTO> addAuthorToBook(
+            @PathVariable("bookId") long bookId,
+            @PathVariable("authorId") long authorId) {
+        BookDTO bookDTO = bookService.addAuthor(bookId, authorId);
         return new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
 
-    @PutMapping("/{bookId}")
-    public ResponseEntity<BookDTO> updateBook(@PathVariable("bookId") long bookId  , @RequestBody BookDTO bookDTO) {
+    @PostMapping(BOOK_PUBLISHER)
+    public ResponseEntity<BookDTO> setBookPublisher(
+            @PathVariable("bookId") long bookId,
+            @PathVariable("publisherId") long publisherId) {
+        BookDTO bookDTO = bookService.setBookPublisher(bookId, publisherId);
+        return new ResponseEntity<>(bookDTO, HttpStatus.OK);
+    }
+
+    // PUT MAPPING
+    @PutMapping(BOOK)
+    public ResponseEntity<?> updateBook(
+            @PathVariable("bookId") long bookId,
+            @Valid @RequestBody BookDTO bookDTO,
+            BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            return ValidationError.getErrors(bindingResult.getAllErrors());
+        }
         bookService.findById(bookId);
         bookDTO.setId(bookId);
         BookDTO updatedBook = bookService.save(bookDTO);
         return new ResponseEntity<>(updatedBook, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{bookId}")
-    public ResponseEntity<?> deleteBook(@PathVariable("bookId") long bookId) {
+    // DELETE MAPPING
+    @DeleteMapping(BOOK)
+    public ResponseEntity<String> deleteBook(@PathVariable("bookId") long bookId) {
         bookService.findById(bookId);
         bookService.deleteById(bookId);
         return new ResponseEntity<>("Book deleted successfully !", HttpStatus.OK);
     }
 
-    private ResponseEntity<HttpErrorResponse<Map<String, String>>> getErrors(List<ObjectError> allErrors) {
-        Map<String, String> errors = new HashMap<>();
-        String field, message;
-        for (ObjectError objectError : allErrors) {
-            field = ((FieldError) objectError).getField();
-            message = objectError.getDefaultMessage();
-            errors.put(field, message);
-        }
-        HttpErrorResponse<Map<String, String>> httpErrorResponse =
-                new HttpErrorResponse<>(HttpStatus.BAD_REQUEST.value(), "Validation Errors", new Date(), errors);
-        return new ResponseEntity<>(httpErrorResponse, HttpStatus.BAD_REQUEST);
+    @DeleteMapping(BOOK_AUTHOR)
+    public ResponseEntity<BookDTO> detachAuthor(
+            @PathVariable("bookId") long bookId,
+            @PathVariable("authorId") long authorId
+    ) {
+        BookDTO bookDTO = bookService.detachAuthor(bookId, authorId);
+        return new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
 
+    @DeleteMapping(BOOK_PUBLISHER)
+    public ResponseEntity<BookDTO> detachPublisher(
+            @PathVariable("bookId") long bookId,
+            @PathVariable("publisherId") long publisherId
+    ) {
+        BookDTO bookDTO = bookService.detachPublisher(bookId, publisherId);
+        return new ResponseEntity<>(bookDTO, HttpStatus.OK);
+    }
 }

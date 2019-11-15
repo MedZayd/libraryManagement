@@ -1,17 +1,16 @@
 package com.med.library.service;
 
-import com.med.library.dTo.AuthorDTO;
 import com.med.library.dTo.BookDTO;
-import com.med.library.entity.Book;
-import com.med.library.entity.Borrow;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface BookService {
-    public List<BookDTO> getAll();
-    public BookDTO findById(Long bookId);
-    public BookDTO save(BookDTO bookDTO);
-    public void deleteById(Long bookId);
-    public BookDTO addAuthor(long bookId, AuthorDTO authorDTO);
+    List<BookDTO> getAll();
+    BookDTO findById(Long bookId);
+    BookDTO save(BookDTO bookDTO);
+    BookDTO addAuthor(long bookId, long authorId);
+    BookDTO setBookPublisher(long bookId, long publisherId);
+    BookDTO detachAuthor(long bookId, long authorId);
+    BookDTO detachPublisher(long bookId, long publisherId);
+    void deleteById(Long bookId);
 }

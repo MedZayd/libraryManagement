@@ -1,7 +1,10 @@
 package com.med.library.restController;
 
+import com.med.library.dTo.AuthorDTO;
 import com.med.library.dTo.BookDTO;
+import com.med.library.dTo.PublisherDTO;
 import com.med.library.restExceptionHandler.HttpErrorResponse;
+import com.med.library.service.AuthorService;
 import com.med.library.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,8 +24,15 @@ import java.util.Map;
 @RequestMapping("/books")
 public class BookRestController {
 
-    @Autowired
+
     private BookService bookService;
+    private AuthorService authorService;
+
+    @Autowired
+    public BookRestController(BookService bookService, AuthorService authorService) {
+        this.bookService = bookService;
+        this.authorService = authorService;
+    }
 
     @GetMapping
     public ResponseEntity<List<BookDTO>> getAll() {
@@ -36,20 +46,35 @@ public class BookRestController {
         return  new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
 
+    @GetMapping("/{bookId}/authors")
+    public ResponseEntity<List<AuthorDTO>> getBookAuthors(@PathVariable("bookId") long bookId) {
+        BookDTO bookDTO = bookService.findById(bookId);
+        return  new ResponseEntity<>(bookDTO.getAuthorDTOs(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{bookId}/publisher")
+    public ResponseEntity<PublisherDTO> getBookPublisher(@PathVariable("bookId") long bookId) {
+        BookDTO bookDTO = bookService.findById(bookId);
+        return  new ResponseEntity<>(bookDTO.getPublisherDTO(), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<?> saveBook(@Valid @RequestBody BookDTO bookDTO, BindingResult bindingResult) {
         if(bindingResult.hasErrors()){
-            Map<String, String> errors = new HashMap<>();
-            for (ObjectError objectError : bindingResult.getAllErrors()) {
-                String field = ((FieldError) objectError).getField();
-                String message = objectError.getDefaultMessage();
-                errors.put(field, message);
-            }
-            HttpErrorResponse<Map<String, String>> httpErrorResponse = new HttpErrorResponse<>(HttpStatus.BAD_REQUEST.value(), "Validation Errors", new Date(), errors);
-            return new ResponseEntity<>(httpErrorResponse, HttpStatus.BAD_REQUEST);
+            return getErrors(bindingResult.getAllErrors());
         }
         bookDTO.setId(0);
         return new ResponseEntity<>(bookService.save(bookDTO), HttpStatus.OK);
+    }
+
+    // FIXME ...
+    @PostMapping("/{bookId}/authors")
+    public ResponseEntity<?> addBookAuthor(@PathVariable("bookId") long bookId, @Valid @RequestBody AuthorDTO authorDTO, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            return getErrors(bindingResult.getAllErrors());
+        }
+        BookDTO bookDTO = bookService.addAuthor(bookId, authorDTO);
+        return new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{bookId}")
@@ -65,6 +90,19 @@ public class BookRestController {
         bookService.findById(bookId);
         bookService.deleteById(bookId);
         return new ResponseEntity<>("Book deleted successfully !", HttpStatus.OK);
+    }
+
+    private ResponseEntity<HttpErrorResponse<Map<String, String>>> getErrors(List<ObjectError> allErrors) {
+        Map<String, String> errors = new HashMap<>();
+        String field, message;
+        for (ObjectError objectError : allErrors) {
+            field = ((FieldError) objectError).getField();
+            message = objectError.getDefaultMessage();
+            errors.put(field, message);
+        }
+        HttpErrorResponse<Map<String, String>> httpErrorResponse =
+                new HttpErrorResponse<>(HttpStatus.BAD_REQUEST.value(), "Validation Errors", new Date(), errors);
+        return new ResponseEntity<>(httpErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
 }

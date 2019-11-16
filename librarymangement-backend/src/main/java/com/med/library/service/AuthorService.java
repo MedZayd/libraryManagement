@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AuthorService {
-    public List<AuthorDTO> getAll();
-    public AuthorDTO getById(Long authorId);
-    public AuthorDTO findByName(String name);
-    public AuthorDTO save(AuthorDTO authorDTO);
-    public void deleteById(Long authorId);
+    List<AuthorDTO> findAllEnabled();
+    AuthorDTO findById(long authorId);
+    AuthorDTO save(AuthorDTO authorDTO);
+    AuthorDTO update(AuthorDTO authorDTO, long authorId);
+    AuthorDTO enable(boolean enable, long authorId);
+    void delete(long authorId);
 }

@@ -7,6 +7,10 @@ public final class MappingConsts {
     public static final String BOOK_AUTHOR = "/{bookId}/author/{authorId}";
     public static final String BOOK_PUBLISHER = "/{bookId}/publisher/{publisherId}";
 
+    public static final String AUTHORS = "/authors";
+    public static final String AUTHOR = "/{authorId}";
+
+
     /**
      The caller should be prevented from constructing objects of
      this class, by declaring this private constructor.

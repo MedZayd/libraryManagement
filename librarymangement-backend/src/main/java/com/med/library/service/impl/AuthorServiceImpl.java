@@ -5,6 +5,7 @@ import com.med.library.entity.Author;
 import com.med.library.entity.Book;
 import com.med.library.mapper.AuthorMapper;
 import com.med.library.repository.AuthorRepository;
+import com.med.library.restExceptionHandler.exception.EntityHasAssociation;
 import com.med.library.restExceptionHandler.exception.HttpNotFoundException;
 import com.med.library.service.AuthorService;
 import org.mapstruct.Mapper;
@@ -71,6 +72,10 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void delete(long authorId) {
         Author author = validateId(authorId);
+        int size = author.getBooks().size();
+        if(size>0) {
+            throw new EntityHasAssociation("Author is associated with " + size + " books.");
+        }
         authorRepository.delete(author);
     }
 

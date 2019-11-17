@@ -13,6 +13,9 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static com.med.library.utils.ValidationError.getErrors;
+import static com.med.library.utils.MappingConsts.*;
+
+
 
 @RestController
 @RequestMapping(MappingConsts.AUTHORS)
@@ -31,7 +34,7 @@ public class AuthorRestController {
         return new ResponseEntity<>(authorDTOS, HttpStatus.OK);
     }
 
-    @GetMapping(MappingConsts.AUTHOR)
+    @GetMapping(AUTHOR)
     public ResponseEntity<AuthorDTO> getAuthorById(@PathVariable("authorId") long authorId) {
         AuthorDTO authorDTO = authorService.findById(authorId);
         return new ResponseEntity<>(authorDTO, HttpStatus.OK);
@@ -47,7 +50,7 @@ public class AuthorRestController {
         return new ResponseEntity<>(persistedAuthorDto, HttpStatus.OK);
     }
 
-    @PostMapping(MappingConsts.AUTHOR)
+    @PostMapping(AUTHOR)
     public ResponseEntity<String> archive(
             @PathVariable("authorId") long authorId,
             @RequestParam("enable") boolean enable) {
@@ -57,7 +60,7 @@ public class AuthorRestController {
                 : new ResponseEntity<>("Author is archived.", HttpStatus.OK);
     }
 
-    @PutMapping(MappingConsts.AUTHOR)
+    @PutMapping(AUTHOR)
     public ResponseEntity<?> update(
             @PathVariable("authorId") long authorId,
             @Valid @RequestBody AuthorDTO authorDTO,
@@ -67,7 +70,7 @@ public class AuthorRestController {
         return new ResponseEntity<>(updatedAuthorDto, HttpStatus.OK);
     }
 
-    @DeleteMapping(MappingConsts.AUTHOR)
+    @DeleteMapping(AUTHOR)
     public ResponseEntity<String> delete(@PathVariable("authorId") long authorId) {
         authorService.delete(authorId);
         return new ResponseEntity<>("Author deleted.", HttpStatus.OK);

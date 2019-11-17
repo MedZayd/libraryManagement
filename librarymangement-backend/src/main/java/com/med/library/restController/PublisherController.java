@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.med.library.utils.ValidationError.getErrors;
+import static com.med.library.utils.MappingConsts.*;
+
 
 @RestController
 @RequestMapping(MappingConsts.PUBLISHERS)
@@ -30,7 +32,7 @@ public class PublisherController {
         return new ResponseEntity<>(publisherDTOS, HttpStatus.OK);
     }
 
-    @GetMapping(MappingConsts.PUBLISHER)
+    @GetMapping(PUBLISHER)
     public ResponseEntity<PublisherDTO> findById(@PathVariable("publisherId") long pubId) {
         PublisherDTO pbDto = publisherService.findById(pubId);
         return new ResponseEntity<>(pbDto, HttpStatus.OK);
@@ -45,7 +47,7 @@ public class PublisherController {
         return new ResponseEntity<>(savedPbDto, HttpStatus.OK);
     }
 
-    @PostMapping(MappingConsts.PUBLISHER)
+    @PostMapping(PUBLISHER)
     public ResponseEntity<String> archive(
             @PathVariable("publisherId") long pubId,
             @RequestParam("enable") boolean enable ) {
@@ -54,7 +56,7 @@ public class PublisherController {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-    @PutMapping(MappingConsts.PUBLISHER)
+    @PutMapping(PUBLISHER)
     public ResponseEntity<?> update(
             @PathVariable("publisherId") long pubId,
             @RequestBody PublisherDTO publisherDTO,
@@ -64,7 +66,7 @@ public class PublisherController {
         return new ResponseEntity<>(updatedPbDto, HttpStatus.OK);
     }
 
-    @DeleteMapping(MappingConsts.PUBLISHER)
+    @DeleteMapping(PUBLISHER)
     public ResponseEntity<String> delete (@PathVariable("publisherId") long pubId) {
         publisherService.delete(pubId);
         return new ResponseEntity<>("Publisher deleted.", HttpStatus.OK);

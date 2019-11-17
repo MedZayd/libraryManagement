@@ -5,6 +5,7 @@ import com.med.library.entity.Book;
 import com.med.library.entity.Publisher;
 import com.med.library.mapper.PublisherMapper;
 import com.med.library.repository.PublisherRepository;
+import com.med.library.restExceptionHandler.exception.EntityHasAssociation;
 import com.med.library.restExceptionHandler.exception.HttpNotFoundException;
 import com.med.library.service.PublisherService;
 import org.mapstruct.factory.Mappers;
@@ -70,6 +71,10 @@ public class PublisherServiceImpl implements PublisherService {
     @Override
     public void delete(Long publisherId) {
         Publisher publisher = validateId(publisherId);
+        int size = publisher.getBooks().size();
+        if(size>0) {
+            throw new EntityHasAssociation("Publisher is associated with " + size + " books.");
+        }
         publisherRepository.delete(publisher);
     }
 

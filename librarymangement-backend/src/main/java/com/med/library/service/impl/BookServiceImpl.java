@@ -1,6 +1,7 @@
 package com.med.library.service.impl;
 
 import com.med.library.dTo.BookDTO;
+import com.med.library.dTo.BookPAs;
 import com.med.library.entity.Author;
 import com.med.library.entity.Book;
 import com.med.library.entity.Publisher;
@@ -16,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Transactional
 @Service
@@ -49,7 +47,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDTO findById(Long bookId) {
-        Book book = validate(bookId);
+        Book book = validateBookId(bookId);
         return bookMapper.toDTO(book);
     }
 
@@ -62,76 +60,73 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void deleteById(Long bookId) {
-        Book book = validate(bookId);
+        Book book = validateBookId(bookId);
         bookRepository.delete(book);
     }
 
     @Override
-    public BookDTO addAuthor(long bookId, long authorId) {
-        Map<String, Object> objectMap = validate(bookId, authorId, Author.class);
-        Book book = (Book) objectMap.get("book");
-        Author author = (Author) objectMap.get("author");
-        List<Author> bookAuthors = book.getAuthors();
-        bookAuthors.add(author);
-        book.setAuthors(bookAuthors);
-        Book updatedBook = bookRepository.save(book);
-        return bookMapper.toDTO(updatedBook);
-    }
-
-    @Override
-    public BookDTO setBookPublisher(long bookId, long publisherId) {
-        Map<String, Object> objectMap = validate(bookId, publisherId, Publisher.class);
-        Book book = (Book) objectMap.get("book");
-        Publisher publisher = (Publisher) objectMap.get("publisher");
-        book.setPublisher(publisher);
-        Book updatedBook = bookRepository.save(book);
-        return bookMapper.toDTO(updatedBook);
-    }
-
-    @Override
-    public BookDTO detachAuthor(long bookId, long authorId) {
-        Map<String, Object> objectMap = validate(bookId, authorId, Author.class);
-        Book book = (Book) objectMap.get("book");
-        Author author = (Author) objectMap.get("author");
-        List<Author> authors = book.getAuthors();
-        if(authors.indexOf(author) != -1) {
-            authors.remove(author);
+    public BookDTO setBookAuthorsAndPublisher(long bookId, BookPAs bookPAs) {
+        Book book = validateBookId(bookId);
+        if(bookPAs.getAuthorsId() != null && bookPAs.getAuthorsId().size() > 0) {
+            List<Long> authorsId = bookPAs.getAuthorsId();
+            List<Author> authors = book.getAuthors();
+            for (Long id : authorsId) {
+                Author author = validateAuthorId(id);
+                if (authors.indexOf(author) == -1) {
+                    authors.add(author);
+                }
+            }
             book.setAuthors(authors);
-            return bookMapper.toDTO(bookRepository.save(book));
-        } else throw new InvalidIdException("Author ID " + authorId + " not found in book's authors list.");
+        }
+        if(bookPAs.getPublisherId() != null) {
+            Publisher publisher = validatePublisherId(bookPAs.getPublisherId());
+            if (!publisher.equals(book.getPublisher())) {
+                book.setPublisher(publisher);
+            }
+        }
+        Book updatedBook = bookRepository.save(book);
+        return bookMapper.toDTO(updatedBook);
     }
 
     @Override
-    public BookDTO detachPublisher(long bookId, long publisherId) {
-        Map<String, Object> objectMap = validate(bookId, publisherId, Publisher.class);
-        Book book = (Book) objectMap.get("book");
-        Publisher publisher = (Publisher) objectMap.get("publisher");
-        if ( book.getPublisher().equals(publisher) ) {
-            book.setPublisher(null);
-            return bookMapper.toDTO(bookRepository.save(book));
-        } else throw new InvalidIdException("Publisher ID " + publisherId + " does not match Book's Publisher ID");
+    public BookDTO detachBookAuthorsAndPublisher(long bookId, BookPAs bookPAs) {
+        Book book = validateBookId(bookId);
+        if(bookPAs.getAuthorsId() != null && bookPAs.getAuthorsId().size() > 0) {
+            List<Long> authorsId = bookPAs.getAuthorsId();
+            List<Author> authors = book.getAuthors();
+            for (Long id : authorsId) {
+                Author author = validateAuthorId(id);
+                if (authors.indexOf(author) != -1) {
+                    authors.remove(author);
+                }
+            }
+            book.setAuthors(authors);
+        }
+        if(bookPAs.getPublisherId() != null) {
+            Publisher publisher = validatePublisherId(bookPAs.getPublisherId());
+            if (publisher.equals(book.getPublisher())) {
+                book.setPublisher(null);
+            }
+        }
+        Book updatedBook = bookRepository.save(book);
+        return bookMapper.toDTO(updatedBook);
     }
 
-    private Book validate(long bookId) {
-        Optional<Book> book = bookRepository.findById(bookId);
-        if(!book.isPresent()) throw new HttpNotFoundException("Book ID " + bookId + " not found.");
+    private Book validateBookId(long id) {
+        Optional<Book> book = bookRepository.findById(id);
+        if(!book.isPresent()) throw new HttpNotFoundException("Book ID " + id + " not found.");
         return book.get();
     }
 
-    private Map<String, Object> validate(long bookId, long id, Class<?> classType) {
-        Map<String, Object> objects = new HashMap<>();
-        Optional<Book> book = bookRepository.findById(bookId);
-        if(!book.isPresent()) throw new HttpNotFoundException("Book ID " + bookId + " not found.");
-        objects.put("book", book.get());
-        if(classType == Author.class) {
-            Optional<Author> author = authorRepository.findById(id);
-            if(!author.isPresent()) throw new HttpNotFoundException("Author ID " + id + " not found.");
-            objects.put("author", author.get());
-        } else if(classType == Publisher.class) {
-            Optional<Publisher> publisher = publisherRepository.findById(id);
-            if(!publisher.isPresent()) throw new HttpNotFoundException("Publisher ID " + id + " not found.");
-            objects.put("publisher", publisher.get());
-        }
-        return objects;
+    private Author validateAuthorId(long id) {
+        Optional<Author> author = authorRepository.findById(id);
+        if(!author.isPresent()) throw new HttpNotFoundException("Author ID " + id + " not found.");
+        return author.get();
+    }
+
+    private Publisher validatePublisherId(long id) {
+        Optional<Publisher> publisher = publisherRepository.findById(id);
+        if(!publisher.isPresent()) throw new HttpNotFoundException("Publisher ID " + id + " not found.");
+        return publisher.get();
     }
 }

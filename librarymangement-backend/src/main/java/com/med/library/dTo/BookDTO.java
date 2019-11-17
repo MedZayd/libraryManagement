@@ -1,9 +1,7 @@
 package com.med.library.dTo;
 
-import com.med.library.entity.Author;
 import lombok.Data;
 
-import javax.persistence.ManyToMany;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;

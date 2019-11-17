@@ -1,6 +1,7 @@
 package com.med.library.restController;
 
 import com.med.library.dTo.BookDTO;
+import com.med.library.dTo.BookPAs;
 import com.med.library.service.BookService;
 import com.med.library.utils.MappingConsts;
 import com.med.library.utils.ValidationError;
@@ -51,20 +52,20 @@ public class BookRestController {
         return new ResponseEntity<>(bookService.save(bookDTO), HttpStatus.OK);
     }
 
-    @PostMapping(BOOK_AUTHOR)
-    public ResponseEntity<BookDTO> addAuthorToBook(
+    @PostMapping(BOOK_SET)
+    public  ResponseEntity<BookDTO> setBookAuthorsAndPublisher(
             @PathVariable("bookId") long bookId,
-            @PathVariable("authorId") long authorId) {
-        BookDTO bookDTO = bookService.addAuthor(bookId, authorId);
-        return new ResponseEntity<>(bookDTO, HttpStatus.OK);
+            @RequestBody BookPAs bookPAs ) {
+        BookDTO bookDto = bookService.setBookAuthorsAndPublisher(bookId, bookPAs);
+        return new ResponseEntity<>(bookDto, HttpStatus.OK);
     }
 
-    @PostMapping(BOOK_PUBLISHER)
-    public ResponseEntity<BookDTO> setBookPublisher(
+    @PostMapping(BOOK_DETACH)
+    public  ResponseEntity<BookDTO> detachBookAuthorsAndPublisher(
             @PathVariable("bookId") long bookId,
-            @PathVariable("publisherId") long publisherId) {
-        BookDTO bookDTO = bookService.setBookPublisher(bookId, publisherId);
-        return new ResponseEntity<>(bookDTO, HttpStatus.OK);
+            @RequestBody BookPAs bookPAs ) {
+        BookDTO bookDto = bookService.detachBookAuthorsAndPublisher(bookId, bookPAs);
+        return new ResponseEntity<>(bookDto, HttpStatus.OK);
     }
 
     // PUT MAPPING
@@ -88,23 +89,5 @@ public class BookRestController {
         bookService.findById(bookId);
         bookService.deleteById(bookId);
         return new ResponseEntity<>("Book deleted successfully !", HttpStatus.OK);
-    }
-
-    @DeleteMapping(BOOK_AUTHOR)
-    public ResponseEntity<BookDTO> detachAuthor(
-            @PathVariable("bookId") long bookId,
-            @PathVariable("authorId") long authorId
-    ) {
-        BookDTO bookDTO = bookService.detachAuthor(bookId, authorId);
-        return new ResponseEntity<>(bookDTO, HttpStatus.OK);
-    }
-
-    @DeleteMapping(BOOK_PUBLISHER)
-    public ResponseEntity<BookDTO> detachPublisher(
-            @PathVariable("bookId") long bookId,
-            @PathVariable("publisherId") long publisherId
-    ) {
-        BookDTO bookDTO = bookService.detachPublisher(bookId, publisherId);
-        return new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
 }

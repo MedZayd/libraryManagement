@@ -1,15 +1,16 @@
 package com.med.library.service;
 
 import com.med.library.dTo.BookDTO;
-import com.med.library.entity.Book;
-import com.med.library.entity.Borrow;
 
 import java.util.List;
 
 public interface BookService {
-    public List<BookDTO> getAll();
-    public BookDTO findById(Long bookId);
-    public Book save(Book book);
-    public void deleteById(Long bookId);
-    public void addBorrow(Book book, Borrow borrow);
+    List<BookDTO> getAll();
+    BookDTO findById(Long bookId);
+    BookDTO save(BookDTO bookDTO);
+    BookDTO addAuthor(long bookId, long authorId);
+    BookDTO setBookPublisher(long bookId, long publisherId);
+    BookDTO detachAuthor(long bookId, long authorId);
+    BookDTO detachPublisher(long bookId, long publisherId);
+    void deleteById(Long bookId);
 }

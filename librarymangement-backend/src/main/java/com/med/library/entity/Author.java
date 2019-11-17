@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
+@JsonIgnoreProperties("books")
 public class Author {
 
     @Id
@@ -20,16 +21,14 @@ public class Author {
     @NotNull(message = "Author name is mandatory")
     private String name;
 
-    @ManyToMany(mappedBy = "authors")
-    @JsonIgnoreProperties("authors")
+    @Column(columnDefinition = "boolean default true")
+    private boolean enabled = true;
+
+    @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
     private List<Book> books;
 
     public Author(@NotNull(message = "Author name is mandatory") String name) {
         this.name = name;
-    }
-
-    public void addBook(Book book) {
-        this.books.add(book);
     }
 
     @Override

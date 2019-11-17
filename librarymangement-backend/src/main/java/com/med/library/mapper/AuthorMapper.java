@@ -10,9 +10,7 @@ import java.util.List;
 @Mapper
 public interface AuthorMapper {
     AuthorDTO toDto(Author author);
-
     Author toEntity(AuthorDTO authorDTO);
-
     @IterableMapping(qualifiedByName = "toDto")
     List<AuthorDTO> toDtos(List<Author> authors);
 

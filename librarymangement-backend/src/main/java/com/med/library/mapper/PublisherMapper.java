@@ -9,7 +9,6 @@ import java.util.List;
 
 @Mapper
 public interface PublisherMapper {
-
     PublisherDTO toDto(Publisher publisher);
     Publisher toEntity(PublisherDTO publisherDTO);
     @IterableMapping(qualifiedByName = "toDto")

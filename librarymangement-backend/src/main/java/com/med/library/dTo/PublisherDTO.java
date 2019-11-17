@@ -11,4 +11,6 @@ public class PublisherDTO {
 
     @NotNull(message = "Publisher name is mandatory")
     private String name;
+
+    private boolean enabled = true;
 }

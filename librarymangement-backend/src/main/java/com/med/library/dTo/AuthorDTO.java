@@ -11,5 +11,5 @@ public class AuthorDTO {
     @NotNull(message = "Author name is mandatory")
     private String name;
 
-    private boolean enabled;
+    private boolean enabled = true;
 }

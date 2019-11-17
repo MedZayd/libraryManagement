@@ -10,6 +10,9 @@ public final class MappingConsts {
     public static final String AUTHORS = "/authors";
     public static final String AUTHOR = "/{authorId}";
 
+    public static final String PUBLISHERS = "/publishers";
+    public static final String PUBLISHER = "/{publisherId}";
+
 
     /**
      The caller should be prevented from constructing objects of

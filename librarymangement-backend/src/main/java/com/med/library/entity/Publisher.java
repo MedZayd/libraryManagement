@@ -21,15 +21,14 @@ public class Publisher {
     @NotNull(message = "Publisher company name is mandatory")
     private String name;
 
+    @Column(columnDefinition = "boolean default true")
+    private boolean enabled = true;
+
     @OneToMany(mappedBy = "publisher", fetch = FetchType.LAZY)
     private List<Book> books;
 
     public Publisher(@NotNull(message = "Publisher company name is mandatory") String name) {
         this.name = name;
-    }
-
-    public void addBook(Book book) {
-        this.books.add(book);
     }
 
     @Override

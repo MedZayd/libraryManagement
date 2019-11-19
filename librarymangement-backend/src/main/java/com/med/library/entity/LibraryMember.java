@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -42,11 +43,14 @@ public class LibraryMember {
     @NotNull(message = "Author is mandatory")
     private int maxBorrowing;
 
-    @OneToMany(mappedBy = "libraryMember")
-    private List<Borrow> borrows;
+    @Column(columnDefinition = "boolean default true")
+    private boolean enabled;
 
     @OneToMany(mappedBy = "libraryMember")
-    private List<Penalty> penalties;
+    private Set<Borrow> borrows;
+
+    @OneToMany(mappedBy = "libraryMember")
+    private Set<Penalty> penalties;
 
     public LibraryMember(@NotNull(message = "Last name is mandatory") String lastname, @NotNull(message = "First name is mandatory") String firstname, Date birthday, @NotNull(message = "CIN is mandatory") String cin, @Pattern(regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", message = "Invalid mail format.") String mail, @Pattern(regexp = "^0[1-9][0-9]{8}$", message = "Invalid phone number format.") String phone, @NotNull(message = "Author is mandatory") int maxBorrowing) {
         this.lastname = lastname;

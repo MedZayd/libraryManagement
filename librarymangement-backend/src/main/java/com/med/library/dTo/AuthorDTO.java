@@ -1,7 +1,8 @@
 package com.med.library.dTo;
 
-import javax.validation.constraints.NotNull;
 import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 
 @Data
 public class AuthorDTO {

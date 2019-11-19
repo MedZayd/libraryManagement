@@ -38,7 +38,7 @@ public class Book {
     @NotNull(message = "Book language is mandatory")
     private String language;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),

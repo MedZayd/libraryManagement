@@ -13,6 +13,9 @@ public final class MappingConsts {
     public static final String PUBLISHERS = "/publishers";
     public static final String PUBLISHER = "/{publisherId}";
 
+    public static final String MEMBERS = "/members";
+    public static final String MEMBER = "/{memberId}";
+
     /**
      The caller should be prevented from constructing objects of
      this class, by declaring this private constructor.

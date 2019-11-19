@@ -5,6 +5,7 @@ import com.med.library.entity.Author;
 import com.med.library.entity.Book;
 import com.med.library.mapper.AuthorMapper;
 import com.med.library.repository.AuthorRepository;
+import com.med.library.repository.BookRepository;
 import com.med.library.restExceptionHandler.exception.EntityHasAssociation;
 import com.med.library.restExceptionHandler.exception.HttpNotFoundException;
 import com.med.library.service.AuthorService;
@@ -13,21 +14,27 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Transactional
 @Service
 public class AuthorServiceImpl implements AuthorService {
 
+    private static final Logger LOGGER = Logger.getLogger(AuthorService.class.getName());
     private AuthorMapper authorMapper = Mappers.getMapper(AuthorMapper.class);
 
     private AuthorRepository authorRepository;
+    private BookRepository bookRepository;
 
     @Autowired
-    public AuthorServiceImpl(AuthorRepository authorRepository) {
+    public AuthorServiceImpl(AuthorRepository authorRepository, BookRepository bookRepository) {
         this.authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -44,8 +51,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public AuthorDTO save(AuthorDTO authorDTO) {
-        String authorName = authorDTO.getName().trim();
-        validateName(authorName);
+        String authorName = trimSpaces(authorDTO.getName());
         authorDTO.setName(authorName);
         Author persistedAuthor = authorRepository.save(authorMapper.toEntity(authorDTO));
         return authorMapper.toDto(persistedAuthor);
@@ -54,7 +60,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorDTO update(AuthorDTO authorDTO, long authorId) {
         Author author = validateId(authorId);
-        String authorName = authorDTO.getName().trim();
+        String authorName = trimSpaces(authorDTO.getName());
         validateName(authorName);
         author.setName(authorName);
         Author updatedAuthor = authorRepository.save(author);
@@ -72,7 +78,8 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void delete(long authorId) {
         Author author = validateId(authorId);
-        int size = author.getBooks().size();
+        List<Book> books = bookRepository.findByAuthor(authorId);
+        int size = books.size();
         if(size>0) {
             throw new EntityHasAssociation("Author is associated with " + size + " books.");
         }
@@ -87,6 +94,11 @@ public class AuthorServiceImpl implements AuthorService {
 
     private void validateName(String name) {
         Optional<Author> authorDb = authorRepository.findByName(name);
-        if (authorDb.isPresent()) throw new RuntimeException("Author " + name + " already exist in database.");
+        if (authorDb.isPresent()) throw new RuntimeException("Author " + name + " already exist in database - validateName.");
     }
+
+    private String trimSpaces(String string) {
+        return string.trim().replaceAll("[ ]{2,}", " ");
+    }
+
 }

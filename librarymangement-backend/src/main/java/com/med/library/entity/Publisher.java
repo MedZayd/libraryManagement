@@ -8,7 +8,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@JsonIgnoreProperties("books")
 @Data
 @NoArgsConstructor
 @Entity
@@ -18,16 +17,13 @@ public class Publisher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull(message = "Publisher company name is mandatory")
+    @Column(unique = true, length = 30)
     private String name;
 
     @Column(columnDefinition = "boolean default true")
     private boolean enabled = true;
 
-    @OneToMany(mappedBy = "publisher", fetch = FetchType.LAZY)
-    private List<Book> books;
-
-    public Publisher(@NotNull(message = "Publisher company name is mandatory") String name) {
+    public Publisher(String name) {
         this.name = name;
     }
 

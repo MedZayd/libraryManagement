@@ -1,5 +1,6 @@
 package com.med.library.utils;
 
+import com.med.library.restExceptionHandler.CustomHttpStatus;
 import com.med.library.restExceptionHandler.HttpErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class ValidationError {
             errors.put(field, message);
         }
         HttpErrorResponse<Map<String, String>> httpErrorResponse =
-                new HttpErrorResponse<>(HttpStatus.BAD_REQUEST.value(), "Validation Errors", new Date(), errors);
+                new HttpErrorResponse<>(CustomHttpStatus.ERROR, "Bean Validation Errors", new Date(), errors);
         return new ResponseEntity<>(httpErrorResponse, HttpStatus.BAD_REQUEST);
     }
 }

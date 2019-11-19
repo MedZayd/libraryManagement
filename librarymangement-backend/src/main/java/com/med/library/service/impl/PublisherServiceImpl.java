@@ -4,6 +4,7 @@ import com.med.library.dTo.PublisherDTO;
 import com.med.library.entity.Book;
 import com.med.library.entity.Publisher;
 import com.med.library.mapper.PublisherMapper;
+import com.med.library.repository.BookRepository;
 import com.med.library.repository.PublisherRepository;
 import com.med.library.restExceptionHandler.exception.EntityHasAssociation;
 import com.med.library.restExceptionHandler.exception.HttpNotFoundException;
@@ -23,10 +24,12 @@ public class PublisherServiceImpl implements PublisherService {
     private PublisherMapper publisherMapper = Mappers.getMapper(PublisherMapper.class);
 
     private PublisherRepository publisherRepository;
+    private BookRepository bookRepository;
 
     @Autowired
-    public PublisherServiceImpl(PublisherRepository publisherRepository) {
+    public PublisherServiceImpl(PublisherRepository publisherRepository, BookRepository bookRepository) {
         this.publisherRepository = publisherRepository;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -44,7 +47,6 @@ public class PublisherServiceImpl implements PublisherService {
     @Override
     public PublisherDTO save(PublisherDTO publisherDTO) {
         String publisherName = publisherDTO.getName().trim();
-        validateName(publisherName);
         publisherDTO.setName(publisherName);
         Publisher persistedPublisher = publisherRepository.save(publisherMapper.toEntity(publisherDTO));
         return publisherMapper.toDto(persistedPublisher);
@@ -54,7 +56,6 @@ public class PublisherServiceImpl implements PublisherService {
     public PublisherDTO update(PublisherDTO publisherDTO, long publisherId) {
         Publisher publisher = validateId(publisherId);
         String publisherName = publisherDTO.getName().trim();
-        validateName(publisherName);
         publisher.setName(publisherName);
         Publisher updatedPublisher = publisherRepository.save(publisher);
         return publisherMapper.toDto(updatedPublisher);
@@ -71,7 +72,8 @@ public class PublisherServiceImpl implements PublisherService {
     @Override
     public void delete(Long publisherId) {
         Publisher publisher = validateId(publisherId);
-        int size = publisher.getBooks().size();
+        List<Book> books = bookRepository.findByPublisher(publisher);
+        int size = books.size();
         if(size>0) {
             throw new EntityHasAssociation("Publisher is associated with " + size + " books.");
         }
@@ -84,8 +86,4 @@ public class PublisherServiceImpl implements PublisherService {
         return publisher.get();
     }
 
-    private void validateName(String name) {
-        Optional<Publisher> publisherDb = publisherRepository.findByName(name);
-        if (publisherDb.isPresent()) throw new RuntimeException("Publisher " + name + " already exist in database.");
-    }
 }

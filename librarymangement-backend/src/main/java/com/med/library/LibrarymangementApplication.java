@@ -11,20 +11,22 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class LibrarymangementApplication implements CommandLineRunner {
 
-	private BookService bookService;
-	private AuthorService authorService;
-	private PublisherService publisherService;
-
-	@Autowired
-	public LibrarymangementApplication(BookService bookService, AuthorService authorService, PublisherService publisherService) {
-		this.bookService = bookService;
-		this.authorService = authorService;
-		this.publisherService = publisherService;
-	}
+//	private BookService bookService;
+//	private AuthorService authorService;
+//	private PublisherService publisherService;
+//
+//	@Autowired
+//	public LibrarymangementApplication(BookService bookService, AuthorService authorService, PublisherService publisherService) {
+//		this.bookService = bookService;
+//		this.authorService = authorService;
+//		this.publisherService = publisherService;
+//	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(LibrarymangementApplication.class, args);
 	}
+
+
 
 	@Override
 	public void run(String... args) throws Exception {

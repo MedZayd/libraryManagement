@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.med.library.utils.ValidationError.getErrors;
@@ -40,7 +41,7 @@ public class PublisherController {
 
     @PostMapping
     public ResponseEntity<?> create(
-            @RequestBody PublisherDTO publisherDTO,
+            @Valid @RequestBody PublisherDTO publisherDTO,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) return getErrors(bindingResult.getAllErrors());
         PublisherDTO savedPbDto = publisherService.save(publisherDTO);
@@ -59,7 +60,7 @@ public class PublisherController {
     @PutMapping(PUBLISHER)
     public ResponseEntity<?> update(
             @PathVariable("publisherId") long pubId,
-            @RequestBody PublisherDTO publisherDTO,
+            @Valid @RequestBody PublisherDTO publisherDTO,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) return getErrors(bindingResult.getAllErrors());
         PublisherDTO updatedPbDto = publisherService.update(publisherDTO, pubId);
